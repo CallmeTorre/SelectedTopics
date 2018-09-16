@@ -2,7 +2,7 @@ var grid;
 var cols;
 var rows;
 var livingCells;
-var resolution = 20;
+var resolution = 10;
 
 function makeGrid(cols, rows) {
     let arr = new Array(cols);
@@ -13,18 +13,56 @@ function makeGrid(cols, rows) {
 }  
 
 function setup() {
-    createCanvas(720,400);
-    cols = floor(width / resolution);
-    rows = floor(height / resolution);
+    colsLabel = createP("Inserte Número de Columnas");
+    colsLabel.position(0,10);
+    colsInput = createInput("50");
+    colsInput.position(200,20);
+    colsInput.size(90,20);
 
-    grid = makeGrid(cols, rows);
+    rowsLabel = createP("Inserte Número de Filas");
+    rowsLabel.position(0,50);
+    rowsInput = createInput("50");
+    rowsInput.position(200,60);
+    rowsInput.size(90,20);
+    
+    distributionLabel = createP("Probabilidad de 0s");
+    distributionLabel.position(400, 50);
+    distributionInput = createInput("50");
+    distributionInput.position(540, 60);
+    distributionInput.size(90, 20);
+
+    randomBtn = createButton("Generación Aleatoria");
+    randomBtn.position(10, 110);
+    randomBtn.mousePressed(randomGeneration);
+
+    stopBtn = createButton("Alto");
+    stopBtn.position(160, 110);
+    stopBtn.mousePressed(noLoop);
+
+    /*startBtn = createButton("Comenzar");
+    startBtn.position(365, 110);
+    startBtn.mousePressed(beginGame);*/
+
+    createDiv("").id("content");
+    colsLabel.parent("content");
+    colsInput.parent("content");
+    rowsLabel.parent("content");
+    rowsInput.parent("content");
+    distributionLabel.parent("content");
+    distributionInput.parent("content");
+    randomBtn.parent("content");
+    stopBtn.parent("content");
+    //startBtn.parent("content");    
 }
 
-function mousePressed() {
-    init();
-  }
+function randomGeneration(){
+    cols = parseInt(colsInput.value());
+    rows = parseInt(rowsInput.value());
 
-function init(){
+    createCanvas(cols*resolution,rows*resolution);
+
+    grid = makeGrid(cols, rows);
+
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
             grid[i][j] = floor(random(2));
