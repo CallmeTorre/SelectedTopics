@@ -39,9 +39,9 @@ function setup() {
     stopBtn.position(160, 110);
     stopBtn.mousePressed(noLoop);
 
-    /*startBtn = createButton("Comenzar");
-    startBtn.position(365, 110);
-    startBtn.mousePressed(beginGame);*/
+    startBtn = createButton("Continuar");
+    startBtn.position(220, 110);
+    startBtn.mousePressed(loop);
 
     createDiv("").id("content");
     colsLabel.parent("content");
@@ -52,7 +52,7 @@ function setup() {
     distributionInput.parent("content");
     randomBtn.parent("content");
     stopBtn.parent("content");
-    //startBtn.parent("content");    
+    startBtn.parent("content");    
 }
 
 function randomGeneration(){
@@ -68,6 +68,7 @@ function randomGeneration(){
             grid[i][j] = floor(random(2));
         }
     }
+    loop();
 }
 
 function draw(){
