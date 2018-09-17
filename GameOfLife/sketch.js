@@ -3,10 +3,9 @@ var cols;
 var rows;
 var div;
 var rules;
-var resolution = 10;
+var resolution = 3;
 var generation;
 var livingCells;
-var deadCells;
 
 function makeGrid(cols, rows) {
     let arr = new Array(cols);
@@ -17,7 +16,6 @@ function makeGrid(cols, rows) {
 }  
 
 function setup() {
-    createCanvas(1000,1000);
     colsLabel = createP("Inserte Número de Columnas");
     colsLabel.position(900,10);
     colsInput = createInput("50");
@@ -72,47 +70,30 @@ function randomGeneration(){
     cols = parseInt(colsInput.value());
     rows = parseInt(rowsInput.value());
     grid = makeGrid(cols, rows);
+    rules = rulesInput.value().split(",");
+    resizeCanvas(cols*resolution, rows*resolution);
 
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
             grid[i][j] = floor(random(2));
         }
     }
-    noLoop();
-    redraw();
+    draw();
 }
 
 function draw(){
-    var cells = new Array(2);
-    background(255);
+    let next = makeGrid(cols, rows);
+    background(0);
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
             let x = i * resolution;
             let y = j * resolution;
             if(grid[i][j] == 1){
-                fill(0);
-                livingCells += 1;
-            }
-            else{
                 fill(255);
-                deadCells += 1;
+                livingCells += 1;
+                stroke(0);
+                rect(x, y, resolution - 1, resolution - 1);
             }
-            stroke(0);
-            rect(x, y, resolution - 1, resolution - 1);
-        }
-    }
-    newGeneration();
-    console.log(generation, livingCells, deadCells);
-    generation+=1;
-    livingCells = 0;
-    deadCells = 0;
-}
-
-function newGeneration(){
-    let next = makeGrid(cols, rows);
-    rules = rulesInput.value().split(",");
-    for (let i = 0; i < cols; i++) {
-        for (let j = 0; j < rows; j++) {
             let state = grid[i][j];
             let neighbours = countNeighbours(grid, i, j); 
             if(state == 0 && neighbours == parseInt(rules[2])){
@@ -129,6 +110,9 @@ function newGeneration(){
         }
     }
     grid = next;
+    generation+=1;
+    livingCells = 0;
+    deadCells = 0;
 }
 
 function countNeighbours(grid, x, y){
