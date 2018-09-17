@@ -1,8 +1,12 @@
 var grid;
 var cols;
 var rows;
-var livingCells;
+var div;
+var rules;
 var resolution = 10;
+var generation;
+var livingCells;
+var deadCells;
 
 function makeGrid(cols, rows) {
     let arr = new Array(cols);
@@ -13,54 +17,60 @@ function makeGrid(cols, rows) {
 }  
 
 function setup() {
+    createCanvas(1000,1000);
     colsLabel = createP("Inserte Número de Columnas");
-    colsLabel.position(0,10);
+    colsLabel.position(900,10);
     colsInput = createInput("50");
-    colsInput.position(200,20);
+    colsInput.position(1100,20);
     colsInput.size(90,20);
 
     rowsLabel = createP("Inserte Número de Filas");
-    rowsLabel.position(0,50);
+    rowsLabel.position(900,50);
     rowsInput = createInput("50");
-    rowsInput.position(200,60);
+    rowsInput.position(1100,60);
     rowsInput.size(90,20);
     
     distributionLabel = createP("Probabilidad de 0s");
-    distributionLabel.position(400, 50);
+    distributionLabel.position(900, 90);
     distributionInput = createInput("50");
-    distributionInput.position(540, 60);
+    distributionInput.position(1100, 100);
     distributionInput.size(90, 20);
 
+    rulesLabel = createP("Inserte la regla deseada");
+    rulesLabel.position(900,130);
+    rulesInput = createInput("2,3,3,3");
+    rulesInput.position(1100,140);
+    rulesInput.size(90,20);
+
     randomBtn = createButton("Generación Aleatoria");
-    randomBtn.position(10, 110);
+    randomBtn.position(900, 190);
     randomBtn.mousePressed(randomGeneration);
 
-    stopBtn = createButton("Alto");
-    stopBtn.position(160, 110);
-    stopBtn.mousePressed(noLoop);
-
     startBtn = createButton("Continuar");
-    startBtn.position(220, 110);
+    startBtn.position(1100, 190);
     startBtn.mousePressed(loop);
 
-    createDiv("").id("content");
+    stopBtn = createButton("Alto");
+    stopBtn.position(1200, 190);
+    stopBtn.mousePressed(noLoop);
+
+    div = createDiv("").id("content");
     colsLabel.parent("content");
     colsInput.parent("content");
     rowsLabel.parent("content");
     rowsInput.parent("content");
     distributionLabel.parent("content");
     distributionInput.parent("content");
-    randomBtn.parent("content");
-    stopBtn.parent("content");
-    startBtn.parent("content");    
+    rulesLabel.parent("content");
+    rulesInput.parent("content");
+    randomBtn.parent("content");  
+    noLoop(); 
 }
 
 function randomGeneration(){
+    generation = 0;
     cols = parseInt(colsInput.value());
     rows = parseInt(rowsInput.value());
-
-    createCanvas(cols*resolution,rows*resolution);
-
     grid = makeGrid(cols, rows);
 
     for (let i = 0; i < cols; i++) {
@@ -68,41 +78,50 @@ function randomGeneration(){
             grid[i][j] = floor(random(2));
         }
     }
-    loop();
+    noLoop();
+    redraw();
 }
 
 function draw(){
+    var cells = new Array(2);
     background(255);
-    newGeneration();
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
             let x = i * resolution;
             let y = j * resolution;
             if(grid[i][j] == 1){
                 fill(0);
+                livingCells += 1;
             }
             else{
                 fill(255);
+                deadCells += 1;
             }
             stroke(0);
             rect(x, y, resolution - 1, resolution - 1);
         }
     }
+    newGeneration();
+    console.log(generation, livingCells, deadCells);
+    generation+=1;
+    livingCells = 0;
+    deadCells = 0;
 }
 
 function newGeneration(){
     let next = makeGrid(cols, rows);
+    rules = rulesInput.value().split(",");
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
             let state = grid[i][j];
             let neighbours = countNeighbours(grid, i, j); 
-            if(state == 0 && neighbours == 3){
+            if(state == 0 && neighbours == parseInt(rules[2])){
                 next[i][j] = 1;
             }
-            else if(state == 1 && neighbours < 2){
+            else if(state == 1 && neighbours < parseInt(rules[0])){
                 next[i][j] = 0;
             }
-            else if(state == 1 && neighbours > 3){
+            else if(state == 1 && neighbours > parseInt(rules[1])){
                 next[i][j] = 0;
             }else{
                 next[i][j] = state;
