@@ -5,7 +5,7 @@ var div;
 var rules;
 var probability;
 var generation;
-var resolution = 3;
+var resolution = 5;
 var livingCells = 0; 
 
 function makeGrid(cols, rows) {
@@ -23,7 +23,7 @@ function getRandomDistribution(prob) {
     var state = 0;
 
     while (state < states.length) {
-        for (i = 0; i < probabilities[state]; i++)
+        for (let i = 0; i < probabilities[state]; i++)
             probArray[probArray.length] = states[state];
         state++;
     }
@@ -71,17 +71,17 @@ function setup() {
     fileBtn.position(900,220);
     fileBtn.mousePressed(fileSelected);
 
-    div = createDiv("").id("content");
-    colsLabel.parent("content");
-    colsInput.parent("content");
-    rowsLabel.parent("content");
-    rowsInput.parent("content");
-    distributionLabel.parent("content");
-    distributionInput.parent("content");
-    rulesLabel.parent("content");
-    rulesInput.parent("content");
-    randomBtn.parent("content");  
-    fileBtn.parent("content");
+    div = createDiv("").id("toHide");
+    colsLabel.parent("toHide");
+    colsInput.parent("toHide");
+    rowsLabel.parent("toHide");
+    rowsInput.parent("toHide");
+    distributionLabel.parent("toHide");
+    distributionInput.parent("toHide");
+    rulesLabel.parent("toHide");
+    rulesInput.parent("toHide");
+    randomBtn.parent("toHide");  
+    fileBtn.parent("toHide");
     noLoop(); 
 }
 
