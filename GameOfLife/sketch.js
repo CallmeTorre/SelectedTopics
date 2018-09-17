@@ -3,9 +3,10 @@ var cols;
 var rows;
 var div;
 var rules;
-var resolution = 3;
+var probability;
 var generation;
-var livingCells;
+var resolution = 3;
+var livingCells = 0; 
 
 function makeGrid(cols, rows) {
     let arr = new Array(cols);
@@ -14,6 +15,20 @@ function makeGrid(cols, rows) {
     }
     return arr;
 }  
+
+function getRandomDistribution(prob) {
+    var states = [0, 1];
+    var probabilities = [prob, 100 - prob]; 
+    var probArray = new Array(); 
+    var state = 0;
+
+    while (state < states.length) {
+        for (i = 0; i < probabilities[state]; i++)
+            probArray[probArray.length] = states[state];
+        state++;
+    }
+    return probArray;
+}
 
 function setup() {
     colsLabel = createP("Inserte Número de Columnas");
@@ -45,12 +60,16 @@ function setup() {
     randomBtn.mousePressed(randomGeneration);
 
     startBtn = createButton("Continuar");
-    startBtn.position(1100, 190);
+    startBtn.position(1050, 190);
     startBtn.mousePressed(loop);
 
     stopBtn = createButton("Alto");
-    stopBtn.position(1200, 190);
+    stopBtn.position(1150, 190);
     stopBtn.mousePressed(noLoop);
+
+    fileBtn = createButton("Importar Archivo");
+    fileBtn.position(900,220);
+    fileBtn.mousePressed(fileSelected);
 
     div = createDiv("").id("content");
     colsLabel.parent("content");
@@ -62,20 +81,28 @@ function setup() {
     rulesLabel.parent("content");
     rulesInput.parent("content");
     randomBtn.parent("content");  
+    fileBtn.parent("content");
     noLoop(); 
+}
+
+function fileSelected(file){
+    loadStrings("board.txt", fileLoaded);
 }
 
 function randomGeneration(){
     generation = 0;
     cols = parseInt(colsInput.value());
     rows = parseInt(rowsInput.value());
+    probability = parseInt(distributionInput.value());
     grid = makeGrid(cols, rows);
     rules = rulesInput.value().split(",");
+    
+    var probArray = getRandomDistribution(probability);
     resizeCanvas(cols*resolution, rows*resolution);
-
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
-            grid[i][j] = floor(random(2));
+            randomNumber = floor(random(100));
+            grid[i][j] = probArray[randomNumber];
         }
     }
     draw();
