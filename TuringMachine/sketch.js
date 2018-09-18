@@ -1,7 +1,9 @@
 var head;
 var currentState;
+var writer;
 var tape = [];
 var resolution = 50;
+var output = "output.txt";
 
 function setup() {
     createCanvas(1000,1000);
@@ -40,6 +42,12 @@ function draw(){
     checkState();
 }
 
+function writeFile(output) {
+	txtFile.open("w");
+	txtFile.writeln(output);
+	txtFile.close();
+}
+
 function setUpTape(stringToDuplicate){
     let lengthTape = (stringToDuplicate.length * 2)+2;
     let tempTape = new Array(lengthTape);
@@ -54,7 +62,7 @@ function setUpTape(stringToDuplicate){
 }
 
 function checkState(){
-    console.log(tape);
+    writer.print(tape);
     if(currentState == 0 && tape[head] == 1){
         tape[head] = 'x';
         head += 1;
@@ -108,6 +116,8 @@ function checkState(){
         currentState = 5;
     }else if(currentState == 5){
         noLoop();
+        writer.close();
+        writer.clear();
     }
 }
 
@@ -116,6 +126,6 @@ function duplicateString(){
     currentState = 0;
     stringInput = onesInput.value();
     tape = setUpTape(stringInput);
+    writer = createWriter(output);
     draw();
-    //checkState();
 }
