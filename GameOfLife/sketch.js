@@ -44,13 +44,14 @@ function fileLoaded(data){
     cols = parseInt(colsInput.value());
     grid = makeGrid(cols, rows);
     rules = rulesInput.value().split(",");
+    resizeCanvas(cols*resolution, rows*resolution);
     tempcols = temp.length;
     temprows = temp[0].length;
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
-            if(i < tempcols){
-                if(j < temprows){
-                    grid[j][i] = int(temp[i][j]);
+            if(i < temprows){
+                if(j < tempcols){
+                    grid[i][j] = int(temp[j][i]);
                 }
                 else{
                     grid[i][j] = 0;
