@@ -61,8 +61,7 @@ function fileLoaded(data){
             }
         }
     }
-    noLoop();
-    redraw();
+    draw();
 }
 
 function setup() {
@@ -106,6 +105,10 @@ function setup() {
     fileBtn.position(900,220);
     fileBtn.mousePressed(fileSelected);
 
+    manualBtn = createButton("Generación Manual");
+    manualBtn.position(1050,220);
+    manualBtn.mousePressed(manualGeneration);
+
     div = createDiv("").id("toHide");
     colsLabel.parent("toHide");
     colsInput.parent("toHide");
@@ -119,6 +122,61 @@ function setup() {
     fileBtn.parent("toHide");
     noLoop(); 
 }
+
+function manualGeneration() {
+    rows = parseInt(rowsInput.value());
+    cols = parseInt(colsInput.value());
+    rules = rulesInput.value().split(",");
+    grid = makeGrid(cols, rows);
+    resizeCanvas(cols*resolution, rows*resolution);
+    var body = document.getElementsByTagName("body")[0];
+    var table = document.createElement("table");
+    var tableBody = document.createElement("tbody");
+
+    table.style.width = "100%";
+    table.id = "manual_grid";
+    for (var i = 0; i < rows; i++) {
+        var tr = document.createElement("tr");
+        for (var j = 0; j < cols; j++) {
+            var cell = document.createElement("input");
+            cell.type = "button";
+            cell.className = "btn";
+            cell.value = "0";
+            cell.id = j + "," + i;
+            cell.setAttribute("onclick", "setValue(this.id);");
+            cell.style.className = "btn_grid";
+            cell.style.width = "100%";
+            cell.style.height = "100%";
+            cell.style.backgroundColor = "#FFFFFF";
+            var td = document.createElement("td");
+
+            td.appendChild(cell);
+            tr.appendChild(td);
+
+            grid[j][i] = 0;
+        }
+        tableBody.appendChild(tr);
+    }
+    table.appendChild(tableBody);
+    body.appendChild(table);
+}
+
+function setValue(id) {
+    id = id.split(",");
+    state = document.getElementById(id).value;
+
+    if (state == 0) {
+        state = 1;
+        document.getElementById(id).style.backgroundColor = "#212121";
+    } else{
+        state = 0;
+        document.getElementById(id).style.backgroundColor = "#FFFFFF";
+    }
+    grid[id[0]][id[1]] = state;
+    document.getElementById(id).value = state;
+
+}
+
 
 function fileSelected(file){
     loadStrings("board.txt", fileLoaded);
