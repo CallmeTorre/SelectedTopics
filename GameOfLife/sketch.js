@@ -46,14 +46,18 @@ function fileLoaded(data){
     rules = rulesInput.value().split(",");
     tempcols = temp.length;
     temprows = temp[0].length;
-    for (let i = 0; i < temprows; i++) {
-        for (let j = 0; j < tempcols; j++) {
-            grid[i][j] = temp[j][i];
-        }       
-    }
-    for(let i = tempcols; i < cols; i++){
-        for(let j = temprows; j < rows; j++){
-            grid[i][j] = 0;
+    for (let i = 0; i < cols; i++) {
+        for (let j = 0; j < rows; j++) {
+            if(i < tempcols){
+                if(j < temprows){
+                    grid[j][i] = int(temp[i][j]);
+                }
+                else{
+                    grid[i][j] = 0;
+                }
+            }else{
+                grid[i].fill(0);
+            }
         }
     }
     noLoop();
