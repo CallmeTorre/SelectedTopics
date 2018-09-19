@@ -30,6 +30,36 @@ function getRandomDistribution(prob) {
     return probArray;
 }
 
+function convertToArray(data){
+    let arr = new Array(data.length);
+    for(let i = 0; i < arr.length; i++){
+        arr[i] = data[i].split(",");
+    }
+    return arr;
+}
+
+function fileLoaded(data){
+    let temp = convertToArray(data);
+    rows = parseInt(rowsInput.value());
+    cols = parseInt(colsInput.value());
+    grid = makeGrid(cols, rows);
+    rules = rulesInput.value().split(",");
+    tempcols = temp.length;
+    temprows = temp[0].length;
+    for (let i = 0; i < temprows; i++) {
+        for (let j = 0; j < tempcols; j++) {
+            grid[i][j] = temp[j][i];
+        }       
+    }
+    for(let i = tempcols; i < cols; i++){
+        for(let j = temprows; j < rows; j++){
+            grid[i][j] = 0;
+        }
+    }
+    noLoop();
+    redraw();
+}
+
 function setup() {
     colsLabel = createP("Inserte Número de Columnas");
     colsLabel.position(900,10);
