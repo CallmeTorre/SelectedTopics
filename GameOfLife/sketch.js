@@ -108,18 +108,6 @@ function setup() {
     manualBtn = createButton("Generación Manual");
     manualBtn.position(1050,220);
     manualBtn.mousePressed(manualGeneration);
-
-    div = createDiv("").id("toHide");
-    colsLabel.parent("toHide");
-    colsInput.parent("toHide");
-    rowsLabel.parent("toHide");
-    rowsInput.parent("toHide");
-    distributionLabel.parent("toHide");
-    distributionInput.parent("toHide");
-    rulesLabel.parent("toHide");
-    rulesInput.parent("toHide");
-    randomBtn.parent("toHide");  
-    fileBtn.parent("toHide");
     noLoop(); 
 }
 
@@ -133,29 +121,23 @@ function manualGeneration() {
     var table = document.createElement("table");
     var tableBody = document.createElement("tbody");
 
-    table.style.width = "100%";
-    table.id = "manual_grid";
     for (var i = 0; i < rows; i++) {
-        var tr = document.createElement("tr");
+        var tableRow = document.createElement("tr");
         for (var j = 0; j < cols; j++) {
             var cell = document.createElement("input");
             cell.type = "button";
-            cell.className = "btn";
             cell.value = "0";
             cell.id = j + "," + i;
             cell.setAttribute("onclick", "setValue(this.id);");
-            cell.style.className = "btn_grid";
-            cell.style.width = "100%";
-            cell.style.height = "100%";
             cell.style.backgroundColor = "#FFFFFF";
             var td = document.createElement("td");
 
             td.appendChild(cell);
-            tr.appendChild(td);
+            tableRow.appendChild(td);
 
             grid[j][i] = 0;
         }
-        tableBody.appendChild(tr);
+        tableBody.appendChild(tableRow);
     }
     table.appendChild(tableBody);
     body.appendChild(table);
@@ -163,16 +145,19 @@ function manualGeneration() {
 
 function setValue(id) {
     id = id.split(",");
+    col = id[0];
+    row = id[1];
     state = document.getElementById(id).value;
 
-    if (state == 0) {
-        state = 1;
-        document.getElementById(id).style.backgroundColor = "#212121";
-    } else{
+    if (state == 1) {
         state = 0;
         document.getElementById(id).style.backgroundColor = "#FFFFFF";
+    } else{
+        state = 1;
+        document.getElementById(id).style.backgroundColor = "#212121";
+
     }
-    grid[id[0]][id[1]] = state;
+    grid[col][row] = state;
     document.getElementById(id).value = state;
 
 }
