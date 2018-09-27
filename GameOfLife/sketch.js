@@ -122,6 +122,12 @@ function setup() {
     noLoop(); 
 }
 
+function keyTyped() {
+    if (key === 'n') {
+        draw();
+    }
+}
+
 function manualGeneration() {
     gameOn = true;
     rows = parseInt(rowsInput.value());
