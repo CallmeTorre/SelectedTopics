@@ -4,7 +4,7 @@ var rows;
 var div;
 var rules;
 var probability;
-var generation;
+var generation = 0;
 var resolution = 5;
 var livingCells = 0; 
 var gameOn = false;
@@ -119,6 +119,11 @@ function setup() {
     manualBtn.position(1050,220);
     manualBtn.mousePressed(manualGeneration);
 
+    manualBtn = createButton("Graficar");
+    manualBtn.position(900,260);
+    manualBtn.mousePressed(graph);
+    localStorage.setItem("gameOn", 0);
+
     noLoop(); 
 }
 
@@ -126,6 +131,12 @@ function keyTyped() {
     if (key === 'n') {
         draw();
     }
+}
+
+function graph(){
+    localStorage.setItem("gameOn", true);
+    localStorage.setItem("rows", rows);
+    localStorage.setItem("cols", cols);
 }
 
 function manualGeneration() {
@@ -233,6 +244,8 @@ function draw(){
                 }
             }
         }
+        localStorage.setItem("livingCells", livingCells);
+        localStorage.setItem("generation", generation);
         grid = next;
         generation+=1;
         livingCells = 0;
