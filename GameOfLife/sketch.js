@@ -6,7 +6,7 @@ var rules;
 var probability;
 var generation = 0;
 var resolution = 5;
-var livingCells = 0; 
+var livingCells = 0;
 var gameOn = false;
 
 function makeGrid(rows, cols) {
@@ -15,12 +15,12 @@ function makeGrid(rows, cols) {
         arr[i] = new Array(cols);
     }
     return arr;
-}  
+}
 
 function getRandomDistribution(prob) {
     var states = [0, 1];
-    var probabilities = [prob, 100 - prob]; 
-    var probArray = new Array(); 
+    var probabilities = [prob, 100 - prob];
+    var probArray = new Array();
     var state = 0;
 
     while (state < states.length) {
@@ -31,33 +31,32 @@ function getRandomDistribution(prob) {
     return probArray;
 }
 
-function convertToArray(data){
+function convertToArray(data) {
     let arr = new Array(data.length);
-    for(let i = 0; i < arr.length; i++){
+    for (let i = 0; i < arr.length; i++) {
         arr[i] = data[i].split(",");
     }
     return arr;
 }
 
-function fileLoaded(data){
+function fileLoaded(data) {
     let temp = convertToArray(data);
     rows = parseInt(rowsInput.value());
     cols = parseInt(colsInput.value());
     grid = makeGrid(rows, cols);
     rules = rulesInput.value().split(",");
-    resizeCanvas(cols*resolution, rows*resolution);
+    resizeCanvas(cols * resolution, rows * resolution);
     temprows = temp.length;
     tempcols = temp[0].length;
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < cols; j++) {
-            if(i < temprows){
-                if(j < tempcols){
+            if (i < temprows) {
+                if (j < tempcols) {
                     grid[i][j] = int(temp[i][j]);
-                }
-                else{
+                } else {
                     grid[i][j] = 0;
                 }
-            }else{
+            } else {
                 grid[i].fill(0);
             }
         }
@@ -66,9 +65,9 @@ function fileLoaded(data){
     draw();
 }
 
-function convertToArray(data){
+function convertToArray(data) {
     let arr = new Array(data.length);
-    for(let i = 0; i < arr.length; i++){
+    for (let i = 0; i < arr.length; i++) {
         arr[i] = data[i].split(",");
     }
     return arr;
@@ -76,17 +75,17 @@ function convertToArray(data){
 
 function setup() {
     colsLabel = createP("Inserte Número de Columnas");
-    colsLabel.position(900,10);
+    colsLabel.position(900, 10);
     colsInput = createInput("5");
-    colsInput.position(1100,20);
-    colsInput.size(90,20);
+    colsInput.position(1100, 20);
+    colsInput.size(90, 20);
 
     rowsLabel = createP("Inserte Número de Filas");
-    rowsLabel.position(900,50);
+    rowsLabel.position(900, 50);
     rowsInput = createInput("10");
-    rowsInput.position(1100,60);
-    rowsInput.size(90,20);
-    
+    rowsInput.position(1100, 60);
+    rowsInput.size(90, 20);
+
     distributionLabel = createP("Probabilidad de 0s");
     distributionLabel.position(900, 90);
     distributionInput = createInput("50");
@@ -94,10 +93,10 @@ function setup() {
     distributionInput.size(90, 20);
 
     rulesLabel = createP("Inserte la regla deseada");
-    rulesLabel.position(900,130);
+    rulesLabel.position(900, 130);
     rulesInput = createInput("2,3,3,3");
-    rulesInput.position(1100,140);
-    rulesInput.size(90,20);
+    rulesInput.position(1100, 140);
+    rulesInput.size(90, 20);
 
     randomBtn = createButton("Generación Aleatoria");
     randomBtn.position(900, 190);
@@ -112,19 +111,19 @@ function setup() {
     stopBtn.mousePressed(noLoop);
 
     fileBtn = createButton("Importar Archivo");
-    fileBtn.position(900,220);
+    fileBtn.position(900, 220);
     fileBtn.mousePressed(fileSelected);
 
     manualBtn = createButton("Generación Manual");
-    manualBtn.position(1050,220);
+    manualBtn.position(1050, 220);
     manualBtn.mousePressed(manualGeneration);
 
     manualBtn = createButton("Graficar");
-    manualBtn.position(900,260);
+    manualBtn.position(900, 260);
     manualBtn.mousePressed(graph);
     localStorage.setItem("gameOn", 0);
 
-    noLoop(); 
+    noLoop();
 }
 
 function keyTyped() {
@@ -133,7 +132,7 @@ function keyTyped() {
     }
 }
 
-function graph(){
+function graph() {
     localStorage.setItem("gameOn", true);
     localStorage.setItem("rows", rows);
     localStorage.setItem("cols", cols);
@@ -144,9 +143,9 @@ function manualGeneration() {
     rows = parseInt(rowsInput.value());
     cols = parseInt(colsInput.value());
     rules = rulesInput.value().split(",");
-    let a = makeGrid(rows, cols); 
+    let a = makeGrid(rows, cols);
     grid = makeGrid(rows, cols);
-    resizeCanvas(cols*resolution, rows*resolution);
+    resizeCanvas(cols * resolution, rows * resolution);
     var body = document.getElementsByTagName("body")[0];
     var table = document.createElement("table");
     var tableBody = document.createElement("tbody");
@@ -182,7 +181,7 @@ function setValue(id) {
     if (state == 1) {
         state = 0;
         document.getElementById(id).style.backgroundColor = "#FFFFFF";
-    } else{
+    } else {
         state = 1;
         document.getElementById(id).style.backgroundColor = "#212121";
 
@@ -191,20 +190,20 @@ function setValue(id) {
     document.getElementById(id).value = state;
 }
 
-function fileSelected(file){
+function fileSelected() {
     loadStrings("board.txt", fileLoaded);
 }
 
-function randomGeneration(){
+function randomGeneration() {
     generation = 0;
     cols = parseInt(colsInput.value());
     rows = parseInt(rowsInput.value());
     probability = parseInt(distributionInput.value());
     grid = makeGrid(rows, cols);
     rules = rulesInput.value().split(",");
-    
+
     var probArray = getRandomDistribution(probability);
-    resizeCanvas(cols*resolution, rows*resolution);
+    resizeCanvas(cols * resolution, rows * resolution);
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < cols; j++) {
             randomNumber = floor(random(100));
@@ -215,31 +214,29 @@ function randomGeneration(){
     draw();
 }
 
-function draw(){
-    if(gameOn){
+function draw() {
+    if (gameOn) {
         let next = makeGrid(rows, cols);
         background(0);
         for (let i = 0; i < rows; i++) {
             for (let j = 0; j < cols; j++) {
                 let x = i * resolution;
                 let y = j * resolution;
-                if(grid[i][j] == 1){
+                if (grid[i][j] == 1) {
                     fill(255);
                     livingCells += 1;
                     stroke(0);
                     rect(y, x, resolution - 1, resolution - 1);
                 }
                 let state = grid[i][j];
-                let neighbours = countNeighbours(grid, i, j); 
-                if(state == 0 && neighbours == parseInt(rules[2])){
+                let neighbours = countNeighbours(grid, i, j);
+                if (state == 0 && neighbours == parseInt(rules[2])) {
                     next[i][j] = 1;
-                }
-                else if(state == 1 && neighbours < parseInt(rules[0])){
+                } else if (state == 1 && neighbours < parseInt(rules[0])) {
                     next[i][j] = 0;
-                }
-                else if(state == 1 && neighbours > parseInt(rules[1])){
+                } else if (state == 1 && neighbours > parseInt(rules[1])) {
                     next[i][j] = 0;
-                }else{
+                } else {
                     next[i][j] = state;
                 }
             }
@@ -247,18 +244,18 @@ function draw(){
         localStorage.setItem("livingCells", livingCells);
         localStorage.setItem("generation", generation);
         grid = next;
-        generation+=1;
+        generation += 1;
         livingCells = 0;
         deadCells = 0;
     }
 }
 
-function countNeighbours(grid, x, y){
+function countNeighbours(grid, x, y) {
     let sum = 0;
     for (let i = -1; i < 2; i++) {
         for (let j = -1; j < 2; j++) {
             let col = (y + j + cols) % cols;
-            let row = (x + i + rows) % rows; 
+            let row = (x + i + rows) % rows;
             sum += grid[row][col];
         }
     }
