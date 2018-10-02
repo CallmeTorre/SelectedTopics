@@ -77,25 +77,25 @@ function setup() {
     colsLabel = createP("Inserte Número de Columnas");
     colsLabel.position(900, 10);
     colsInput = createInput("5");
-    colsInput.position(1100, 20);
+    colsInput.position(1130, 20);
     colsInput.size(90, 20);
 
     rowsLabel = createP("Inserte Número de Filas");
     rowsLabel.position(900, 50);
     rowsInput = createInput("10");
-    rowsInput.position(1100, 60);
+    rowsInput.position(1130, 60);
     rowsInput.size(90, 20);
 
     distributionLabel = createP("Probabilidad de 0s");
     distributionLabel.position(900, 90);
     distributionInput = createInput("50");
-    distributionInput.position(1100, 100);
+    distributionInput.position(1130, 100);
     distributionInput.size(90, 20);
 
     rulesLabel = createP("Inserte la regla deseada");
     rulesLabel.position(900, 130);
     rulesInput = createInput("2,3,3,3");
-    rulesInput.position(1100, 140);
+    rulesInput.position(1130, 140);
     rulesInput.size(90, 20);
 
     randomBtn = createButton("Generación Aleatoria");
@@ -103,19 +103,19 @@ function setup() {
     randomBtn.mousePressed(randomGeneration);
 
     startBtn = createButton("Continuar");
-    startBtn.position(1050, 190);
+    startBtn.position(1060, 190);
     startBtn.mousePressed(loop);
 
     stopBtn = createButton("Alto");
-    stopBtn.position(1150, 190);
+    stopBtn.position(1170, 190);
     stopBtn.mousePressed(noLoop);
 
     fileBtn = createButton("Importar Archivo");
-    fileBtn.position(900, 220);
+    fileBtn.position(900, 225);
     fileBtn.mousePressed(fileSelected);
 
     manualBtn = createButton("Generación Manual");
-    manualBtn.position(1050, 220);
+    manualBtn.position(1050, 225);
     manualBtn.mousePressed(manualGeneration);
 
     manualBtn = createButton("Graficar");

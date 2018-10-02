@@ -1,0 +1,22 @@
+button {
+    background-color: #4566c7;
+    -moz-border-radius: 9px;
+    -webkit-border-radius: 9px;
+    border-radius: 9px;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    font-family: Arial;
+    font-size: 12px;
+    padding: 7px 18px;
+    text-decoration: none;
+}
+
+button:hover {
+    background-color: #393e94;
+}
+
+button:active {
+    position: relative;
+    top: 1px;
+}
