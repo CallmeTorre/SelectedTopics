@@ -1,7 +1,6 @@
 var grid;
 var cols;
 var rows;
-var div;
 var rules;
 var probability;
 var generation = 0;
@@ -144,7 +143,6 @@ function manualGeneration() {
     rows = parseInt(rowsInput.value());
     cols = parseInt(colsInput.value());
     rules = rulesInput.value().split(",");
-    let a = makeGrid(rows, cols); 
     grid = makeGrid(rows, cols);
     resizeCanvas(cols*resolution, rows*resolution);
     var body = document.getElementsByTagName("body")[0];
