@@ -229,7 +229,7 @@ function draw(){
                 }
                 let state = grid[i][j];
                 let neighbours = countNeighbours(grid, i, j); 
-                if(state == 0 && neighbours == parseInt(rules[2])){
+                if(state == 0 && neighbours >= parseInt(rules[2]) && neighbours <= parseInt(rules[3])){
                     next[i][j] = 1;
                 }
                 else if(state == 1 && neighbours < parseInt(rules[0])){
