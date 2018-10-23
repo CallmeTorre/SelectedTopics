@@ -121,9 +121,32 @@ function setup() {
     manualBtn = createButton("Graficar");
     manualBtn.position(900,260);
     manualBtn.mousePressed(graph);
-    localStorage.setItem("gameOn", 0);
+
+    atractorBtn = createButton("Atractor");
+    atractorBtn.position(1050,260);
+    atractorBtn.mousePressed(generateAtractor);
 
     noLoop(); 
+}
+
+function generateAtractor(){
+    let exp;
+    let binary_number;
+    let binary_array;
+    rows = parseInt(rowsInput.value());
+    cols = parseInt(colsInput.value());
+    exp = pow(2, rows*cols);
+    for(let i = 0; i < exp; i++){
+        binary_number = i.toString(2);
+        binary_array = binary_number.split("");
+        while(binary_array.length < (rows*cols)){
+            binary_array.unshift("0");
+        }
+        binary_array = binary_array.map(Number);
+        let temp_grid = [];
+        while(binary_array.length) temp_grid.push(binary_array.splice(0,rows));
+        console.log(temp_grid);
+    }
 }
 
 function keyTyped() {
