@@ -3,10 +3,16 @@ var cols;
 var rows;
 var rules;
 var probability;
+var nodes;
 var generation = 0;
 var resolution = 5;
 var livingCells = 0; 
 var gameOn = false;
+var currentConfig = 0;
+var createAtractor = false;
+var seachingNodes = new Map();
+var configNumber = 0;
+
 
 function makeGrid(rows, cols) {
     let arr = new Array(rows);
@@ -65,14 +71,6 @@ function fileLoaded(data){
     draw();
 }
 
-function convertToArray(data){
-    let arr = new Array(data.length);
-    for(let i = 0; i < arr.length; i++){
-        arr[i] = data[i].split(",");
-    }
-    return arr;
-}
-
 function setup() {
     colsLabel = createP("Inserte Número de Columnas");
     colsLabel.position(900,10);
@@ -129,24 +127,57 @@ function setup() {
     noLoop(); 
 }
 
-function generateAtractor(){
-    let exp;
+function binaryArrayToGrid(binary_array, size){
+    let result = [];
+    while(binary_array.length) {
+        result.push(binary_array.splice(0,size));
+    }
+    return result
+}
+
+function gridToNumber(array){
+    let configuration = array.flat().join("");
+    let decimalNumber = parseInt(configuration, 2);
+    return decimalNumber;
+}
+
+function numberToBinaryArray(number){
     let binary_number;
+    let result;
+    binary_number = number.toString(2);
+    result = binary_number.split("");
+    while(result.length < (rows*cols)){
+        result.unshift("0");
+    }
+    return result.map(Number);
+}
+
+function configGrid(number, chunks_size){
     let binary_array;
+    binary_array = numberToBinaryArray(number);
+    return binaryArrayToGrid(binary_array, chunks_size)
+}
+
+function generateDictionary(number_of_nodes) {
+    const nodes = new Map();
+    for (let index = 0; index < number_of_nodes; index++) {
+        var mySet = new Set();
+        nodes.set(index, mySet);
+    }
+
+    return nodes;
+}
+
+function generateAtractor(){
     rows = parseInt(rowsInput.value());
     cols = parseInt(colsInput.value());
-    exp = pow(2, rows*cols);
-    for(let i = 0; i < exp; i++){
-        binary_number = i.toString(2);
-        binary_array = binary_number.split("");
-        while(binary_array.length < (rows*cols)){
-            binary_array.unshift("0");
-        }
-        binary_array = binary_array.map(Number);
-        let temp_grid = [];
-        while(binary_array.length) temp_grid.push(binary_array.splice(0,rows));
-        console.log(temp_grid);
-    }
+    rules = rulesInput.value().split(",");
+    resizeCanvas(cols*resolution, rows*resolution);
+    configNumber = Math.pow(2, rows*cols);
+    seachingNodes = generateDictionary(configNumber);
+    grid = configGrid(currentConfig, rows);
+    createAtractor = true;
+    gameOn = true;
 }
 
 function keyTyped() {
@@ -236,10 +267,40 @@ function randomGeneration(){
     draw();
 }
 
+function createJSON(dictionary){
+    var jsonObj = {
+        nodes: [],
+        edges: []
+    }
+
+    for (var [key, value] of dictionary) {
+
+        jsonObj['nodes'].push({
+            "data": {
+                "id": key.toString()
+            }
+        });
+        for (let item of value) {
+            jsonObj['edges'].push({
+                "data": {
+                    "source": key.toString(),
+                    "target": item.toString()
+                }
+            });
+        }
+    }
+
+    saveJSON(jsonObj, 'graph.json');
+}
+
 function draw(){
     if(gameOn){
         let next = makeGrid(rows, cols);
         background(0);
+        let currentNode;
+        if(createAtractor == true){
+            currentNode = gridToNumber(grid);
+        }
         for (let i = 0; i < rows; i++) {
             for (let j = 0; j < cols; j++) {
                 let x = i * resolution;
@@ -271,6 +332,30 @@ function draw(){
         generation+=1;
         livingCells = 0;
         deadCells = 0;
+        if(createAtractor == true){
+            let nextNode = gridToNumber(grid);
+            nodes = seachingNodes.get(currentNode);
+            if(!nodes.has(nextNode)){
+                nodes.add(nextNode);
+                seachingNodes.set(currentNode, nodes);
+            }else if(currentNode == nextNode){
+                if(currentConfig < configNumber - 1){
+                    currentConfig += 1;
+                    grid = configGrid(currentConfig, rows);
+                }else{
+                    gameOn = false;
+                    createJSON(seachingNodes);
+                }
+            } else {
+                if(currentConfig < configNumber - 1){
+                    currentConfig += 1;
+                    grid = configGrid(currentConfig, rows);
+                }else{
+                    gameOn = false;
+                    createJSON(seachingNodes);
+                }
+            }
+        }
     }
 }
 
