@@ -4,6 +4,8 @@ var rows;
 var rules;
 var probability;
 var nodes;
+let patternsDict;
+let patternsCounter = [0, 0, 0];
 var generation = 0;
 var resolution = 5;
 var livingCells = 0; 
@@ -124,6 +126,8 @@ function setup() {
     atractorBtn.position(1050,260);
     atractorBtn.mousePressed(generateAtractor);
 
+    patternsDict = generatePatternsDict();
+
     noLoop(); 
 }
 
@@ -190,6 +194,7 @@ function graph(){
     localStorage.setItem("gameOn", true);
     localStorage.setItem("rows", rows);
     localStorage.setItem("cols", cols);
+    localStorage.setItem("patterns", patternsCounter);
 }
 
 function manualGeneration() {
@@ -312,7 +317,9 @@ function draw(){
                     rect(y, x, resolution - 1, resolution - 1);
                 }
                 let state = grid[i][j];
-                let neighbours = countNeighbours(grid, i, j); 
+                let neighbours_array = countNeighbours(grid, i, j);
+                let neighbours = neighbours_array[0]
+                countPatterns(neighbours_array[1]) 
                 if(state == 0 && neighbours >= parseInt(rules[2]) && neighbours <= parseInt(rules[3])){
                     next[i][j] = 1;
                 }
@@ -328,10 +335,14 @@ function draw(){
         }
         localStorage.setItem("livingCells", livingCells);
         localStorage.setItem("generation", generation);
+        localStorage.setItem("patterns", patternsCounter);
+
         grid = next;
         generation+=1;
         livingCells = 0;
         deadCells = 0;
+        patternsCounter = [0, 0, 0];
+
         if(createAtractor == true){
             let nextNode = gridToNumber(grid);
             nodes = seachingNodes.get(currentNode);
@@ -360,14 +371,69 @@ function draw(){
 }
 
 function countNeighbours(grid, x, y){
+    let binary_string = "";
     let sum = 0;
     for (let i = -1; i < 2; i++) {
         for (let j = -1; j < 2; j++) {
             let col = (y + j + cols) % cols;
             let row = (x + i + rows) % rows; 
+            binary_string += (grid[row][col]).toString();
             sum += grid[row][col];
         }
     }
     sum -= grid[x][y];
-    return sum
+    return [sum, parseInt(binary_string, 2)]
+}
+
+function generatePatternsDict() {
+    let patterns = new Map();
+    let stillLife1 = 432; 
+    let stillLife2 = 216; 
+    let stillLife3 = 54; 
+    let stillLife4 = 27; 
+
+    let stillLife5 = 426; 
+    let stillLife6 = 170; 
+
+    let oscillator1 = 56;
+    let oscillator2 = 146;
+
+    let glider1 = 346;
+    let glider2 = 107;
+    let glider3 = 79
+    let glider4 = 286;
+
+    patterns.set(stillLife1, "stillLifeQuarter");
+    patterns.set(stillLife2, "stillLifeQuarter");
+    patterns.set(stillLife3, "stillLifeQuarter");
+    patterns.set(stillLife4, "stillLifeQuarter");
+
+    patterns.set(stillLife5, "stillLife");
+    patterns.set(stillLife6, "stillLife");
+
+    patterns.set(oscillator1, "oscillator");
+    patterns.set(oscillator2, "oscillator");
+
+    patterns.set(glider1, "glider");
+    patterns.set(glider2, "glider");
+    patterns.set(glider3, "glider");
+    patterns.set(glider4, "glider");
+
+    return patterns;
+}
+
+function countPatterns(key) {
+    let configuration = patternsDict.get(key);
+
+    if (configuration === undefined) {
+        return;
+    } else if (configuration == 'stillLifeQuarter') {
+        patternsCounter[0] += 0.25;
+    } else if (configuration == 'stillLife') {
+        patternsCounter[0] += 1;
+    } else if (configuration == 'oscillator') {
+        patternsCounter[1] += 1;
+    } else {
+        patternsCounter[2] += 1;
+    }
 }
