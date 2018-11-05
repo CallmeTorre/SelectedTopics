@@ -2,7 +2,7 @@ import json
 
 from graphviz import Digraph
 
-with open('4x4.json', 'r') as f:
+with open('4x4Dif.json', 'r') as f:
     nodes_dict = json.load(f)
 
 f = Digraph('finite_state_machine', filename='fsm.gv', engine='sfdp')
