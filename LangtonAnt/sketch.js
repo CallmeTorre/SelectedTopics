@@ -133,22 +133,25 @@ function changeValue(id) {
     if (current_val == 0) {
         current_val = 10;
         new_ant = new Ant(splitted_id[0], splitted_id[1], 0, 0, grid.length, grid[0].length);
-        document.getElementById(id).style.backgroundColor = "#212121";
+        document.getElementById(id).style.backgroundColor = "#8A9A5B";
         ants.push(new_ant);
     } else if (current_val == 10) {
         current_val = 20;
         ants.pop();
         new_ant = new Ant(splitted_id[0], splitted_id[1], 1, 0, grid.length, grid[0].length);
+        document.getElementById(id).style.backgroundColor = "#FF0800";
         ants.push(new_ant);
     } else if (current_val == 20) {
         ants.pop();
         current_val = 30;
         new_ant = new Ant(splitted_id[0], splitted_id[1], 2, 0, grid.length, grid[0].length);
+        document.getElementById(id).style.backgroundColor = "#00AAFF";
         ants.push(new_ant);
     } else if (current_val == 30) {
         ants.pop();
         current_val = 40;
         new_ant = new Ant(splitted_id[0], splitted_id[1], 3, 0, grid.length, grid[0].length);
+        document.getElementById(id).style.backgroundColor = "#000000";
         ants.push(new_ant);
     } else {
         ants.pop();
