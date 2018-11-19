@@ -1,6 +1,7 @@
 var grid;
 var cols;
 var rows;
+var manualFlag = false;
 var ants = new Array();
 var antsToDie = new Array();
 var probability = 98;
@@ -54,6 +55,14 @@ function setup() {
     randomBtn.position(900, 190);
     randomBtn.mousePressed(randomGeneration);
 
+    manualBtn = createButton("Distribución Manual");
+    manualBtn.position(900, 150);
+    manualBtn.mousePressed(manualGeneration);
+
+    startManualBtn = createButton("Empezar Manual");
+    startManualBtn.position(1050, 150);
+    startManualBtn.mousePressed(startManualGame);
+
     startBtn = createButton("Continuar");
     startBtn.position(1050, 190);
     startBtn.mousePressed(loop);
@@ -69,6 +78,84 @@ function keyTyped() {
     if (key === 'n') {
         draw();
     }
+}
+
+function startManualGame(){
+    document.getElementById("manual_grid").style.display = "none";
+    setTimeout(loop, 1);
+    gameOn = true;
+}
+
+function manualGeneration(){
+    manualFlag = true
+    rows = parseInt(rowsInput.value());
+    cols = parseInt(colsInput.value());
+    grid = makeGrid(rows, cols);
+    resizeCanvas(cols*resolution, rows*resolution);
+    
+    var body = document.getElementsByTagName("body")[0];
+    var tbl = document.createElement("table");
+    var tbdy = document.createElement("tbody");
+    tbl.style.width = "100%";
+    tbl.id = "manual_grid";
+    for (var i_row = 0; i_row < rows; i_row++) {
+        var tr = document.createElement("tr");
+        for (var i_col = 0; i_col < cols; i_col++) {
+            var btn = document.createElement("input");
+            btn.type = "button";
+            btn.className = "btn";
+            btn.value = "0";
+            btn.setAttribute("onclick", "changeValue(this.id);");
+            btn.id = i_row + "," + i_col;
+            btn.style.width = "100%";
+            btn.style.height = "100%";
+            btn.style.color = "white";
+            btn.style.backgroundColor = "#BDBDBD";
+
+            var td = document.createElement("td");
+
+            td.appendChild(btn);
+            tr.appendChild(td);
+
+            grid[i_row][i_col] = 0;
+        }
+        tbdy.appendChild(tr);
+    }
+    tbl.appendChild(tbdy);
+    body.appendChild(tbl);
+}
+
+function changeValue(id) {
+    splitted_id = id.split(",");
+    current_val = document.getElementById(id).value;
+
+    let new_ant;
+    if (current_val == 0) {
+        current_val = 10;
+        new_ant = new Ant(splitted_id[0], splitted_id[1], 0, 0, grid.length, grid[0].length);
+        document.getElementById(id).style.backgroundColor = "#212121";
+        ants.push(new_ant);
+    } else if (current_val == 10) {
+        current_val = 20;
+        ants.pop();
+        new_ant = new Ant(splitted_id[0], splitted_id[1], 1, 0, grid.length, grid[0].length);
+        ants.push(new_ant);
+    } else if (current_val == 20) {
+        ants.pop();
+        current_val = 30;
+        new_ant = new Ant(splitted_id[0], splitted_id[1], 2, 0, grid.length, grid[0].length);
+        ants.push(new_ant);
+    } else if (current_val == 30) {
+        ants.pop();
+        current_val = 40;
+        new_ant = new Ant(splitted_id[0], splitted_id[1], 3, 0, grid.length, grid[0].length);
+        ants.push(new_ant);
+    } else {
+        ants.pop();
+        current_val = 0;
+        document.getElementById(id).style.backgroundColor = "#BDBDBD";
+    }
+    document.getElementById(id).value = current_val;
 }
 
 function randomGeneration(){
@@ -97,7 +184,6 @@ function randomGeneration(){
     }
     gameOn = true;
     draw();
-
 }
 
 function draw() {
