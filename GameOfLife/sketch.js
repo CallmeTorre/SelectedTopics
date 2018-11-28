@@ -4,9 +4,13 @@ var rows;
 var rules;
 var probability;
 var nodes;
+var memory;
 let patternsDict;
+var gensToRemember;
+var criterion;
 let patternsCounter = [0, 0, 0];
 var generation = 0;
+var contador = 0;
 var resolution = 5;
 var livingCells = 0; 
 var gameOn = false;
@@ -52,11 +56,15 @@ function fileLoaded(data){
     cols = parseInt(colsInput.value());
     grid = makeGrid(rows, cols);
     rules = rulesInput.value().split(",");
+    memory = makeGrid(rows, cols);
+    gensToRemember = parseInt(memoryInput.value());
+    criterion = criterionInput.value()
     resizeCanvas(cols*resolution, rows*resolution);
     temprows = temp.length;
     tempcols = temp[0].length;
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < cols; j++) {
+            memory[i][j] = [];
             if(i < temprows){
                 if(j < tempcols){
                     grid[i][j] = int(temp[i][j]);
@@ -125,6 +133,18 @@ function setup() {
     atractorBtn = createButton("Atractor");
     atractorBtn.position(1050,260);
     atractorBtn.mousePressed(generateAtractor);
+
+    memoryLabel = createP("Generaciones a recordar");
+    memoryLabel.position(900, 300);
+    memoryInput = createInput("5");
+    memoryInput.position(1100,310);
+    memoryInput.size(90, 20);
+
+    criterionLabel = createP("Inserte Criterio");
+    criterionLabel.position(900, 350);
+    criterionInput = createInput("Paridad");
+    criterionInput.position(1100,360);
+    criterionInput.size(90, 20);
 
     patternsDict = generatePatternsDict();
 
@@ -258,14 +278,17 @@ function randomGeneration(){
     rows = parseInt(rowsInput.value());
     probability = parseInt(distributionInput.value());
     grid = makeGrid(rows, cols);
+    memory = makeGrid(rows, cols);
     rules = rulesInput.value().split(",");
-    
+    gensToRemember = parseInt(memoryInput.value());
+    criterion = criterionInput.value()
     var probArray = getRandomDistribution(probability);
     resizeCanvas(cols*resolution, rows*resolution);
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < cols; j++) {
             randomNumber = floor(random(100));
             grid[i][j] = probArray[randomNumber];
+            memory[i][j] = [];
         }
     }
     gameOn = true;
@@ -316,20 +339,70 @@ function draw(){
                     stroke(0);
                     rect(y, x, resolution - 1, resolution - 1);
                 }
-                let state = grid[i][j];
-                let neighbours_array = countNeighbours(grid, i, j);
-                let neighbours = neighbours_array[0]
-                countPatterns(neighbours_array[1]) 
-                if(state == 0 && neighbours >= parseInt(rules[2]) && neighbours <= parseInt(rules[3])){
-                    next[i][j] = 1;
-                }
-                else if(state == 1 && neighbours < parseInt(rules[0])){
-                    next[i][j] = 0;
-                }
-                else if(state == 1 && neighbours > parseInt(rules[1])){
-                    next[i][j] = 0;
+                if(contador < parseInt(gensToRemember)){
+                    memory[i][j][contador] = grid[i][j];
+                    let state = grid[i][j];
+                    let neighbours_array = countNeighbours(grid, i, j);
+                    let neighbours = neighbours_array[0]
+                    countPatterns(neighbours_array[1]) 
+                    if(state == 0 && neighbours >= parseInt(rules[2]) && neighbours <= parseInt(rules[3])){
+                        next[i][j] = 1;
+                    }
+                    else if(state == 1 && neighbours < parseInt(rules[0])){
+                        next[i][j] = 0;
+                    }
+                    else if(state == 1 && neighbours > parseInt(rules[1])){
+                        next[i][j] = 0;
+                    }else{
+                        next[i][j] = state;
+                    }
                 }else{
-                    next[i][j] = state;
+                    contador = 0;
+                    if(criterion == "Paridad"){
+                        console.log("Halp");
+                        var count = 0;
+                        for(var cont = 0; cont < memory[i][j].length; ++cont){
+                            if(memory[i][j][cont] == 1)
+                                count++;
+                            }
+                        if(count%2 == 0){
+                            next[i][j] = 1;
+                        }
+                        else{
+                            next[i][j] = 0;
+                        }
+                        memory[i][j] = [];
+                    }else{
+                        if(criterion == "Mayoria"){
+                            var count = 0;
+                            for(var cont = 0; cont < memory[i][j].length; ++cont){
+                                if(memory[i][j][cont] == 1)
+                                    count++;
+                                }
+                            if(count > parseInt(gensToRemember/2)){
+                                next[i][j] = 1;
+                            }
+                            else{
+                                next[i][j] = 0;
+                            }
+                            memory[i][j] = [];
+                        }else{
+                            if(criterion == "Minoria"){
+                                var count = 0;
+                                for(var cont = 0; cont < memory[i][j].length; ++cont){
+                                    if(memory[i][j][cont] == 1)
+                                        count++;
+                                    }
+                                if(count < parseInt(gensToRemember/2)){
+                                    next[i][j] = 1;
+                                }
+                                else{
+                                    next[i][j] = 0;
+                                }
+                                memory[i][j] = [];
+                            }
+                        }
+                    } 
                 }
             }
         }
@@ -342,6 +415,7 @@ function draw(){
         livingCells = 0;
         deadCells = 0;
         patternsCounter = [0, 0, 0];
+        contador+=1;
 
         if(createAtractor == true){
             let nextNode = gridToNumber(grid);
